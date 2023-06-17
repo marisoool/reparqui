@@ -1,1 +1,149 @@
+html, body{
+	height:100%;
+	font-family:sans-serif;
+	padding:0;
+	margin:0;
+}
+#mainCont{
+	height:100%;	
+}
 
+
+
+
+
+
+
+
+
+			#home{text-align:center;}
+			#top{text-align:center;}
+			#mid{border-top:2px solid black;border-bottom:2px solid black;text-align:center;margin:50px;padding:40px;}
+			
+			.temaBtn{margin:5px;background-color:black;color:#eee;padding:4px;width:120px;border:0px;}
+			.temaBtn:hover,.temaBtnSel:hover{background-color:gray;cursor:pointer;}
+			.temaBtnSel{margin:5px;background-color:green;color:#eee;padding:4px;width:120px;border:0px;}
+			
+			#bot{text-align:center;margin:50px;padding:40px;}
+			#startBtn{margin:5px;background-color:black;color:#eee;padding:14px 28px;border:0px;font-size:24pt;}
+			#startBtn:hover{background-color:orange;cursor:pointer;color:white;border:0px;}
+			
+			#menuErr{color:red;border:1px solid red;margin:20px 60px;padding:20px;}
+			.cHide{display:none;}
+			.cShow{display:block;}
+
+			#top_game{text-align:center;}
+			#top_game img{width:130px;}
+			#mid_game{text-align:center;font-family:sans-serif;}
+			#bot_game{text-align:center;}
+			
+			#msjOK{color:gray;border:1px solid gray;background-color:white;font-family:sans-serif;margin:10px;padding: 40px 40px 40px 138px;background-image: url('imgs/ok.png');background-position: 20px;background-repeat: no-repeat;background-size: 27%;display: inline-block;}
+			#msjNOK{color:gray;border:1px solid gray;background-color:white;font-family:sans-serif;margin:10px;padding: 40px 40px 40px 138px;background-image: url('imgs/nok.png');background-position: 20px;background-repeat: no-repeat;background-size: 27%;display: inline-block;}
+			#desc button{background-color:#9e9e9e;color:white;font-size:12px;border:0px solid transparent;padding:10px;}
+
+			.wordle_input{display:inline-block;vertical-align: middle;width: 40px;border: 2px solid #ddd;margin: 1px;border-radius: 6px;height: 40px;text-align: center;text-transform: capitalize;font-weight: bold;font-size: xx-large;font-family:sans-serif;}
+
+			.wordle_ok{background-color:green;color:white;}
+			.wordle_nok{background-color:gray;color:white;}
+			.wordle_almost{background-color:orange;color:white;}
+			.wordle_hide{background-color:gray;color:gray;}
+
+
+			.fort_input{display:inline-block;vertical-align: middle;width: 40px;border-bottom: 2px solid #ddd;margin: 1px;border-radius: 6px;height: 40px;text-align: center;text-transform: capitalize;font-weight: bold;font-size: xx-large;font-family:sans-serif;}
+			
+			
+			#records{
+    background-color: black;
+    color: white;
+    font-family: sans-serif;
+    font-size: 9pt;
+    font-weight: bold;
+    /*padding: 20px;*/
+    margin: 0 auto 20px auto;
+    width: 30%;
+    position: relative;
+    text-align: right;		
+			}
+			
+			#category{
+    background-color: red;
+    padding: 10px 15px;
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    border-radius: 0px 0px 9px 9px;
+	font-size:14px;
+			}
+			
+			#ok_nok{
+				display:inline-block;
+			}
+			
+			#okRec{
+				display: inline-block;
+				margin: 0 0 0 20px;
+				background-image: url('imgs/ok.png');
+				background-size: contain;
+				padding-left: 20px;
+				background-repeat: no-repeat;			
+			}
+			
+			#nokRec{
+				display: inline-block;
+				margin: 0 0 0 20px;
+				background-image: url('imgs/nok.png');
+				background-size: contain;
+				padding-left: 20px;
+				background-repeat: no-repeat;			
+			}
+			
+			#ontoy{
+display: inline-block;
+    background-color: gray;
+    padding: 20px;
+    font-size: 16px;			
+			}
+			
+			
+			
+#okregs, #guesses{
+    border: 1px solid gray;
+    margin-top: 50px;
+    display: inline-block;
+    width: 40%;
+    padding: 20px;
+    background-color: #eee;	
+	
+}
+
+.keyLetter{
+	    border: 1px solid gray;
+    padding: 4px;
+    margin: 2px;
+    background-color: #ddd;
+    font-weight: bold;
+	min-width: 20px;
+    display: inline-block;
+	cursor:pointer;
+}
+
+.keyRow{
+	margin:15px;
+	text-align:center;
+}
+
+.keys_wrong{
+	background-color:#666;
+	color:white;
+	
+}
+
+.keys_wrong_position{
+	background-color:orange;
+	color:white;
+}
+
+.keys_ok{
+	background-color:green;
+	color:white;
+}
