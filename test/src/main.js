@@ -1,9 +1,8 @@
-
 var globals = [];
 globals['sc']=0;
 globals['data'] = {};
 globals['pages'] = {'homeView':false, 'gameView':false, 'dictView':false}; //lista de views del sitio
-globals['numItems']=150;
+globals['numItems']=10;
 globals['listener']=false;
 globals['curGame']=false;
 
@@ -16,11 +15,12 @@ globals['incorrect']=0;
 globals['keys_wrong']=[];
 globals['keys_wrong_position']=[];
 globals['keys_ok']=[];
+globals['f_chances']=0;
 
-var validChars = ["1","2","3","4","5","6","7","8","9","0","Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Ñ","Z","X","C","V","B","N","M"];
-
+//var validChars = ["1","2","3","4","5","6","7","8","9","0","Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Ñ","Z","X","C","V","B","N","M"];
+var validChars = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Ñ","Z","X","C","V","B","N","M"];
 var mainCont = document.getElementById('mainCont');
-mainCont.onclick = function(){if (globals['sc']>1){this.onclick=null;switchView('homeView');}else{globals['sc']++;}};
+mainCont.onclick = function(){if (globals['sc']>6){this.onclick=null;switchView('homeView');}else{globals['sc']++;}};
 
 
 startListeningKeyboard();
@@ -53,13 +53,19 @@ function whichWord(){
 
 
 	//So es ABREVIAtura se cambia de lugar en el QA
-	if (globals['QA'][globals['curQuestion']][3]=='Abreviaturas'){
-		let temp = globals['QA'][globals['curQuestion']][0];
-		globals['QA'][globals['curQuestion']][0]=globals['QA'][globals['curQuestion']][1];
-		globals['QA'][globals['curQuestion']][1]=temp;
+	try{
+		if (globals['QA'] && globals['QA'][globals['curQuestion']][3]=='Abreviaturas'){
+			let temp = globals['QA'][globals['curQuestion']][0];
+			globals['QA'][globals['curQuestion']][0]=globals['QA'][globals['curQuestion']][1];
+			globals['QA'][globals['curQuestion']][1]=temp;
+		}
+	}catch(e){
+		console.log(e);
 	}
-
-	let word = globals['QA'][globals['curQuestion']][0].trim();
+	let word = false;
+	do{
+		word = globals['QA'][globals['curQuestion']][0].trim();
+	}while(!word);
 	word = word.replace('@?@','');
 	//console.log('--\>'+word);
 
@@ -79,7 +85,6 @@ function whichWord(){
 	}
 
 	word = word.trim();
-	globals['word']=word;
 	//aqui veo que van a jugar
 	let optionsGame = [];
 	//optionsGame.push('flashCard');
@@ -103,9 +108,12 @@ function whichWord(){
 	}else{
 		gameType=optionsGame[0];
 	}
-	
+	if (gameType=='fortune'){
+		word = word.replace('—',' — ').replace('/',' / ');
+	}
 	//globals['gameType']=gameType;
 	
+	globals['word']=word;
 	return [word,gameType];
 }
 
@@ -164,10 +172,11 @@ function loadQuestionView() { //carga vista de la pregunta para jugar
 		if(word.length<5){
 			nregalo = 1;
 		}
+
 		let regalo = shuffleArray(allLetters).slice(0,nregalo);
 		let palabras = word.toUpperCase().split(' ');
 		for(p in palabras){
-			let elWord = createElementJS('div','wrd_'+p);
+			let elWord = createElementJS('div','wrd_'+p,{'class':'wrdFortune'});
 			for (l in palabras[p]){
 				let input = createElementJS('span',p+'_'+l);
 				
@@ -184,12 +193,15 @@ function loadQuestionView() { //carga vista de la pregunta para jugar
 		}
 		
 		let optionKey = createElementJS('div','optReg');
+		optionKey.appendChild(createElementJS('br','br0'));
 		let optionKeySel = createElementJS('input','optionKey',{type:"checkbox",'value':'guessPhrase'});
 		let labelKey = createElementJS('label','lblKey');
 		labelKey.innerText='Adivinar frase';
 		let inputGuess = createElementJS('input','guessPhraseTxt',{'type':'text','style':'display:none;'});
+		let chances = createElementJS('span','chancesRecord');
 		optionKey.appendChild(optionKeySel);
 		optionKey.appendChild(labelKey);
+		optionKey.appendChild(chances);
 		optionKey.appendChild(createElementJS('br','br1'));
 		optionKey.appendChild(inputGuess);
 		game.appendChild(optionKey);
@@ -198,7 +210,9 @@ function loadQuestionView() { //carga vista de la pregunta para jugar
 		//startListeningKeyboard();
 		//console.log("aqui me quedo, falta, al keyup si el modo en gues letter, ve si existe la letra, si el modo en guess, se escribe la palabra");
 		
-		
+		globals['f_chances']=0;
+		let chances2 = Math.floor((word.length*.1)*3);
+		chances.innerText=chances2+' oportunidades.';		
 		
 		break;
 		default:
@@ -225,7 +239,7 @@ function loadQuestionView() { //carga vista de la pregunta para jugar
 			}
 			rowKb = createElementJS('div','kbRow_'+l,{'class':'keyRow'});
 		}
-		if(l==30){
+		if(l==20){
 			let key = createElementJS('span','kb_ENTER',{'class':'keyLetter'});	
 			key.innerHTML='&nbsp;Enter&nbsp;';
 			rowKb.appendChild(key);
@@ -233,7 +247,7 @@ function loadQuestionView() { //carga vista de la pregunta para jugar
 		let key = createElementJS('span','kb_'+l,{'class':'keyLetter'});
 		key.innerText=validChars[l];
 		rowKb.appendChild(key);
-		if(l==36){
+		if(l==26){
 			let key = createElementJS('span','kb_BACKSPACE',{'class':'keyLetter'});	
 			key.innerHTML='&nbsp;<--&nbsp;';
 			rowKb.appendChild(key);
@@ -259,7 +273,13 @@ function loadQuestionView() { //carga vista de la pregunta para jugar
 	let cbGuess = document.getElementById('optionKey');
 	if(cbGuess){
 		document.getElementById('optionKey').addEventListener('click',function(){
-			document.getElementById('guessPhraseTxt').setAttribute('style','display:inline-block');
+			let adivina = document.getElementById('guessPhraseTxt');
+			adivina.setAttribute('style','display:inline-block');
+			let cbGuess = document.getElementById('optionKey');
+			cbGuess.checked=true;
+			cbGuess.setAttribute('disabled','disabled');
+			adivina.focus();
+			adivina.select();			
 		});
 	}
 	evalKeys();
@@ -274,7 +294,7 @@ function loadGameView(values){ //crea divs define si questionpage or answer page
 		let hv = createElementJS('div','top_game');
 		let logo = createElementJS('img','gameLogo',{'src':'src/imgs/logo.png'});
 		hv.appendChild(logo);
-		gameCont.appendChild(hv);
+		
 		
 		let recordsCont = createElementJS('div','records');
 		let categoria = createElementJS('span','category');
@@ -290,8 +310,9 @@ function loadGameView(values){ //crea divs define si questionpage or answer page
 		recordsCont.appendChild(oknok);
 		recordsCont.appendChild(calif);
 		recordsCont.appendChild(ontoy);
-
-		gameCont.appendChild(recordsCont);
+		hv.appendChild(recordsCont);
+		
+		gameCont.appendChild(hv);
 		
 
 		let midDiv = createElementJS('div','mid_game');
@@ -432,6 +453,7 @@ function resetStates(){
 }
 
 function loadAnswerView(vals){
+	let curGame = globals['curGame'];
 	resetStates();
 	globals['curGame']=false;
 	//console.log(vals.res);
@@ -441,34 +463,37 @@ function loadAnswerView(vals){
 	//crea un contenedor general para facil remove
 	let msjCont = createElementJS('div','msjCont');
 	
-	let msj = createElementJS('div','msjAns');
-	let textMsj = createElementJS('h2','titAn');
 	if (vals.res=='win') {
-		msj.setAttribute('id','msjOK');
-		textMsj.innerText = 'Muy bien!!!';
+		classRef = 'correct';
 		globals['correct']++;
 	}else{
-		msj.setAttribute('id','msjNOK');
-		textMsj.innerText = 'Uppppps!!!';
+		classRef = 'incorrect';
 		globals['incorrect']++;
 	}
 	
 	document.getElementById('okRec').innerText = globals['correct'];
 	document.getElementById('nokRec').innerText = globals['incorrect'];
-	document.getElementById('calif').innerText = "Calificación: "+(globals['correct']*100)/globals['numItems'];
+	//document.getElementById('calif').innerText = "Calificación: "+(globals['correct']*100)/globals['numItems'];
 	
-	
-	
-	msj.appendChild(textMsj);
-	msjCont.appendChild(msj);
+	//msjCont.appendChild(msj);
 	
 	//Elementos del termino
 	let desc = createElementJS('div','desc');
-	let concept = createElementJS('H4','concept');
+	let concept = createElementJS('H4','concept',{'class':classRef});
 	concept.innerText=globals['word'];
 	desc.appendChild(concept);
-	let detailShort = createElementJS('p','detAn');
-	detailShort.innerText=globals['QA'][globals['curQuestion']][1];
+	let detailShort = createElementJS('p','detAn',{'class':'f_content'});
+	let content = globals['QA'][globals['curQuestion']][1];
+	if (curGame=='fortune'){
+		let titles = ['GENETICS','PATHOPHYSIOLOGY','SYSTEMS AFFECTED','INCIDENCE/PREVALENCE','GEOGRAPHIC DISTRIBUTION','CAUSES','DIAGNOSIS','RISK FACTORS','DIFFERENTIAL DIAGNOSIS','CBC/BIOCHEMISTRY/URINALYSIS','LABORATORY TESTS','OTHER LABORATORY TESTS','DIAGNOSTIC PROCEDURES','IMAGING','SIGNALMENT','SIGNS','CAUSES & RISK FACTORS','PATHOLOGIC FINDINGS','IMAGING'];
+		for (t in titles){
+			content = content.replace(titles[t],'</p><h5>'+titles[t]+'</h5><p class="f_content">');
+		}
+		//content = content.replace('.•','.<br>•');
+		//content = content.replace('0x2022');
+		content = content.replace(/[\u2022]/g,'<br>&#x2022;');
+	}
+	detailShort.innerHTML=content;
 	desc.appendChild(detailShort);
 	
 	msjCont.appendChild(desc);
@@ -500,6 +525,8 @@ function loadAnswerView(vals){
 	msjCont.appendChild(botonera);
 	mainCont.appendChild(msjCont);
 	document.getElementById('btnNext').focus();
+	
+	window.scrollTo(0,0);
 }
 
 function switchView(curView,values={}){
@@ -679,7 +706,6 @@ function setCharValueWordle(key){
 
 function setCharValueFortune(key){
 	
-	//FALTA QUE, SOLO SE TENGANR 4 CHANCES O MENOS SI SON POCAS LETRAS, ADEMAS DE QUE AL COMPLETAR LAS LETRAS SE MANDE A SIGUIENTE CON WIN O LOSE
 	//TAMBIEN FALTA QUE SE PONGA EL INPUT Y AL ENTER COMPARE SE MANDA A WIN O LOSE
 	
 	let allLetters = [...new Set(globals['keys_ok'].concat(globals['keys_wrong'].concat(globals['keys_wrong_position'])))].filter(item => validChars.includes(item));
@@ -715,15 +741,33 @@ function setCharValueFortune(key){
 			evalKeys();
 			
 		}
-		if(allLetters.length==chances+nregalo){
+		globals['f_chances']++;
+		if(chances-globals['f_chances']==0){
 			let cbGuess = document.getElementById('optionKey');
 			//cbGuess.checked=true;
 			cbGuess.click();
 			cbGuess.setAttribute('disabled','disabled');
 			document.getElementById('guessPhraseTxt').focus();
 			document.getElementById('guessPhraseTxt').select();
+		}else{
+			let allRows = document.getElementsByClassName('wrdFortune');
+			palabras = [];
+			for (r in allRows){
+				palabras.push(r.innerText);
+			}
+			if (globals['word']==palabras.join(" ")){
+				cbGuess.click();
+				document.getElementById('guessPhraseTxt').innerText=palabras.join(" ");
+				document.getElementById('kb_ENTER').click();
+				
+			}
+			
 		}
 	}
+
+
+	let quedan = chances - globals['f_chances'];
+	document.getElementById('chancesRecord').innerText=''+(quedan)+" de "+(chances)+' oportunidades';
 	
 }
 
@@ -765,8 +809,6 @@ function selectedKey(name){
 				console.log("NO No no "+name);
 			}					
 		}
-
-		
 		
 	}	
 	//evalua si wrong, wrong pos o es ok
