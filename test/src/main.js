@@ -2,7 +2,7 @@ var globals = [];
 globals['sc']=0;
 globals['data'] = {};
 globals['pages'] = {'homeView':false, 'gameView':false, 'dictView':false}; //lista de views del sitio
-globals['numItems']=10;
+globals['numItems']=100;
 globals['listener']=false;
 globals['curGame']=false;
 
