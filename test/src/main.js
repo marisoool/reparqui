@@ -64,15 +64,22 @@ function whichWord(){
 	}
 	let word = false;
 	do{
-		word = globals['QA'][globals['curQuestion']][0].trim();
+		try{
+			word = globals['QA'][globals['curQuestion']][0].trim();
+		}catch(e){
+			console.log(e);
+		}
 	}while(!word);
 	word = word.replace('@?@','');
 	//console.log('--\>'+word);
 
-	// si son mas de una opcion, AKA tiene una coma
-	let options = word.split(",");
-	options = shuffleArray(options);
-	word = options[0];
+	// si son mas de una opcion, AKA tiene una coma, ojo se quito por que en patologias se cortaba el concepto
+	if (globals['QA'] && globals['QA'][globals['curQuestion']][3]=="Glosario"){
+		let options = word.split(",");
+		options = shuffleArray(options);
+		word = options[0];
+	}
+
 	//console.log('---\>'+word);	
 
 	//si GLOSARIO
@@ -368,10 +375,16 @@ function evalQuestion(game) {
 		//Convierte palabre que si es en un arreglo
 		let arrWord = globals['word'].toUpperCase().split('');
 		//trae todos los valores de la row
-		let rowCont = document.getElementById('row_'+globals['curRow']).innerText;
+		let rowCont = ''
+		try{
+			rowCont = document.getElementById('row_'+globals['curRow']).innerText;
+		}catch(e){
+			console.log(e);
+		}
+		
 		let numContent = rowCont.length;
 		let validTerms = term[numContent];
-		if (validTerms.indexOf(rowCont)==-1){
+		if (validTerms.indexOf(rowCont)==-1 && rowCont!=globals['word'].toUpperCase()){
 			alert("Word not in dictionary");
 		}else{
 
@@ -527,6 +540,51 @@ function loadAnswerView(vals){
 	document.getElementById('btnNext').focus();
 	
 	window.scrollTo(0,0);
+	
+	//EN ALGUN LADO DE AQUI TENGO QUE PONER UN MENU FLOTANTE LATERAL QUE ME PERMITA MARCAR CADA UNA DE LAS RESPUESTAS
+	//LA MARCACION SERA COMO A SANGRE, Y ERROR , QUITAR O IGNORAR Y QUE LO PUEDA BAJAR
+	let botonesFlotantes = createElementJS('div','btnFloat');
+	let breakP = createElementJS('br');
+	let btnFav = createElementJS('button','btnFav');
+	btnFav.innerText = 'FAV';
+	let btnErr = createElementJS('button','btnErr');
+	btnErr.innerText = 'ERR';
+	let btnRem = createElementJS('button','btnRem');
+	btnRem.innerText = 'REM';
+	
+	btnFav.addEventListener('click', function handleClick(event) {
+		if (localStorage.getItem("myFavs") === null) {
+			localStorage.setItem("myFavs",'');
+		}
+		let myFavs = localStorage.getItem('myFavs');
+		myFavs+='|'+globals['QA'][globals['curQuestion']];
+		localStorage.setItem("myFavs",myFavs);
+	});
+	
+	btnErr.addEventListener('click', function handleClick(event) {
+		if (localStorage.getItem("myErrs") === null) {
+			localStorage.setItem("myErrs",'');
+		}
+		let myErrs = localStorage.getItem('myErrs');
+		myErrs+='|'+globals['QA'][globals['curQuestion']];
+		localStorage.setItem("myErrs",myErrs);
+	});	
+	
+	btnRem.addEventListener('click', function handleClick(event) {
+		if (localStorage.getItem("myRems") === null) {
+			localStorage.setItem("myRems",'');
+		}
+		let myRems = localStorage.getItem('myRems');
+		myRems+='|'+globals['QA'][globals['curQuestion']];
+		localStorage.setItem("myRems",myRems);
+	});
+
+	botonesFlotantes.appendChild(btnFav);
+	botonesFlotantes.appendChild(btnErr);
+	botonesFlotantes.appendChild(btnRem);
+	
+	mainCont.appendChild(breakP);
+	mainCont.appendChild(botonesFlotantes);
 }
 
 function switchView(curView,values={}){
