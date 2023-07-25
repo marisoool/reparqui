@@ -43,7 +43,7 @@ function selectedKeyWordle(name){
 		if (validChars.indexOf(name)!==-1){
 			setCharValueWordle(name);
 		}else if (name=='ENTER'){
-			evalAnswer();
+			evalAnswer('wordle');
 		}else if(name=="BACKSPACE"){
 			globals['curCol']--;
 			if(globals['curCol']<0){
