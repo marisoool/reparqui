@@ -1,5 +1,5 @@
 
-var validChars = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Ñ","Z","X","C","V","B","N","M"];
+var validChars = [];
 
 //called by main.js:switchView
 function loadGameView(values){ //crea divs define si questionpage or answer page, staarts listener keyboard
@@ -47,6 +47,7 @@ function loadGameView(values){ //crea divs define si questionpage or answer page
 
 //Called by event click main:startButton
 function startGame(){
+	showLoading();
 	let numItems = globals['numItems'];
 	let msj = document.getElementById('menuErr');
     let selectedTopics = globals['selectedTopics'];
@@ -73,11 +74,21 @@ function startGame(){
 				document.body.appendChild(scr);
 				scr.onload=function(){
 					let dataTits = Object.keys(data);
+					if (info.type=='img'){
+						if(!globals['cats']){
+							globals['cats'] = {};
+						}
+						globals['cats'][info.name]=dataTits;
+					}
 					let randomData = shuffleArray(dataTits);
 					let selTits = randomData.slice(0,numByQuiz);
 					for (x in selTits){
 						let idx = selTits[x];
-						globals['QA'].push([idx,data[idx],info.type,info.name]);
+						let valor = data[idx];
+						if (typeof valor == 'object'){ //para elementos como en img que traen una lista y no un valor plano
+							valor = shuffleArray(valor)[0];
+						}
+						globals['QA'].push([idx,valor,info.type,info.name,info.ref]);
 					}
 				};
 				
@@ -126,8 +137,7 @@ function startGame(){
 		msj.className='cShow';
 	}
 	
-	//Revolvemos preguntas
-	globals['QA'] = shuffleArray(globals['QA']);
+
 	//cambiamos de vista
 	switchView('gameView',{'subView':'questionView'});
 	//console.log("falta, que si no estan todas las letras en linea al enter avise, que se metan palabras reales, funcion delay o sleep, watever it loses or win, answer, remove listener or at list set some global to listen=false and if at function");

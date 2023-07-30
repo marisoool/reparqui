@@ -151,5 +151,7 @@ function evalAnswer(game) {
 		evalAnswerWordle();
 	}else if(game=='qa'){
 		evalAnswerQA();
+	}else if(game=='img'){
+		evalAnswerImg();
 	}
 }

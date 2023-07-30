@@ -1,10 +1,71 @@
 //	QUESTION FUNCTIONS
+
+
+
+//crea elemento
+function gameFortune(game,response){
+
+    let word = response.word;
+    //ooooo de inventario de letras de la palabra y tomo al azar 4
+    let allLetters = [...new Set(word.toUpperCase())].filter(item => validChars.includes(item));
+    let freeLetters = [...new Set(word.toUpperCase())].filter(item => !validChars.includes(item));
+    //agrego los 3 de regalo en freeLetters
+    let nregalo = 3;
+    if(word.length<5){
+        nregalo = 1;
+    }
+
+    let regalo = shuffleArray(allLetters).slice(0,nregalo);
+    let palabras = word.toUpperCase().split(' ');
+	let allPhrase = createElementJS('div','allPhrase');
+    for(p in palabras){
+        let elWord = createElementJS('div','wrd_'+p,{'class':'wrdFortune'});
+        for (l in palabras[p]){
+            let input = createElementJS('span',p+'_'+l);
+            
+            if(freeLetters.indexOf(palabras[p][l])!==-1 || regalo.indexOf(palabras[p][l])!==-1){
+                input.innerText = palabras[p][l];
+                input.setAttribute('class','fort_input fortSpan');
+                globals['keys_ok'].push(palabras[p][l]);
+            }else{
+                input.setAttribute('class','wordle_input fortSpan');
+            }
+            elWord.appendChild(input);
+        }
+        allPhrase.appendChild(elWord);
+    }
+	game.appendChild(allPhrase);
+    
+    let optionKey = createElementJS('div','optReg');
+    optionKey.appendChild(createElementJS('br','br0'));
+    let optionKeySel = createElementJS('input','optionKey',{type:"checkbox",'value':'guessPhrase'});
+    let labelKey = createElementJS('label','lblKey');
+    labelKey.innerText='Adivinar frase';
+    let inputGuess = createElementJS('input','guessPhraseTxt',{'type':'text','style':'display:none;'});
+    let chances = createElementJS('span','chancesRecord');
+    optionKey.appendChild(optionKeySel);
+    optionKey.appendChild(labelKey);
+    optionKey.appendChild(chances);
+    optionKey.appendChild(createElementJS('br','br1'));
+    optionKey.appendChild(inputGuess);
+    game.appendChild(optionKey);
+    
+    
+    
+    globals['f_chances']=0;
+    let chances2 = Math.floor((word.length*.15)*3);
+    chances.innerText=chances2+' oportunidades.';		    
+
+}
+
+
+
+
+//evalua entrada de keyboard
 function setCharValueFortune(key){
 	
-	//TAMBIEN FALTA QUE SE PONGA EL INPUT Y AL ENTER COMPARE SE MANDA A WIN O LOSE
 	
 	let allLetters = [...new Set(globals['keys_ok'].concat(globals['keys_wrong'].concat(globals['keys_wrong_position'])))].filter(item => validChars.includes(item));
-	//console.log(allLetters);
 	let lettersWord = [...new Set(globals['word'].toUpperCase())];
 	
 	//si todavia tiene chances
@@ -44,87 +105,29 @@ function setCharValueFortune(key){
 			cbGuess.setAttribute('disabled','disabled');
 			document.getElementById('guessPhraseTxt').focus();
 			document.getElementById('guessPhraseTxt').select();
-		}else{
-			let allRows = document.getElementsByClassName('wrdFortune');
-			palabras = [];
-			for (r in allRows){
-				palabras.push(r.innerText);
-			}
-			if (globals['word']==palabras.join(" ")){
-				cbGuess.click();
-				document.getElementById('guessPhraseTxt').innerText=palabras.join(" ");
-				document.getElementById('kb_ENTER').click();
-				
-			}
 			
+		}else{
+			let cbGuess = document.getElementById('optionKey');
+			let userRespuesta = document.getElementById('allPhrase').innerText.toUpperCase().replaceAll('\n','').replaceAll(' ','');
+			let wordRespuesta = globals['word'].toUpperCase().replaceAll(' ','');
+			//console.log(userRespuesta,wordRespuesta);
+			if(userRespuesta==wordRespuesta){
+				switchView('gameView',{'res':'win','subView':'answerView'});
+			}			
+
 		}
-        if(allLetters<0){
-            let allSpans = [...new Set(document.getElementsByClassName('fortSpan'))];
-            if(allSpans==allLetters){
-                alert("no la cierres verifica en g_fort ln 64 hirrrrrrr fcs");
-            }
-        }
+
 	}
 
-
-	let quedan = chances - globals['f_chances'];
-	document.getElementById('chancesRecord').innerText=''+(quedan)+" de "+(chances)+' oportunidades';
+	if(document.getElementById('chancesRecord')){
+		let quedan = chances - globals['f_chances'];
+		document.getElementById('chancesRecord').innerText=''+(quedan)+" de "+(chances)+' oportunidades';	
+	}
 	
 }
 
 
-function gameFortune(game,response){
 
-    let word = response.word;
-    //ooooo de inventario de letras de la palabra y tomo al azar 4
-    let allLetters = [...new Set(word.toUpperCase())].filter(item => validChars.includes(item));
-    let freeLetters = [...new Set(word.toUpperCase())].filter(item => !validChars.includes(item));
-    //agrego los 3 de regalo en freeLetters
-    let nregalo = 3;
-    if(word.length<5){
-        nregalo = 1;
-    }
-
-    let regalo = shuffleArray(allLetters).slice(0,nregalo);
-    let palabras = word.toUpperCase().split(' ');
-    for(p in palabras){
-        let elWord = createElementJS('div','wrd_'+p,{'class':'wrdFortune'});
-        for (l in palabras[p]){
-            let input = createElementJS('span',p+'_'+l);
-            
-            if(freeLetters.indexOf(palabras[p][l])!==-1 || regalo.indexOf(palabras[p][l])!==-1){
-                input.innerText = palabras[p][l];
-                input.setAttribute('class','fort_input fortSpan');
-                globals['keys_ok'].push(palabras[p][l]);
-            }else{
-                input.setAttribute('class','wordle_input fortSpan');
-            }
-            elWord.appendChild(input);
-        }
-        game.appendChild(elWord);
-    }
-    
-    let optionKey = createElementJS('div','optReg');
-    optionKey.appendChild(createElementJS('br','br0'));
-    let optionKeySel = createElementJS('input','optionKey',{type:"checkbox",'value':'guessPhrase'});
-    let labelKey = createElementJS('label','lblKey');
-    labelKey.innerText='Adivinar frase';
-    let inputGuess = createElementJS('input','guessPhraseTxt',{'type':'text','style':'display:none;'});
-    let chances = createElementJS('span','chancesRecord');
-    optionKey.appendChild(optionKeySel);
-    optionKey.appendChild(labelKey);
-    optionKey.appendChild(chances);
-    optionKey.appendChild(createElementJS('br','br1'));
-    optionKey.appendChild(inputGuess);
-    game.appendChild(optionKey);
-    
-    
-    
-    globals['f_chances']=0;
-    let chances2 = Math.floor((word.length*.15)*3);
-    chances.innerText=chances2+' oportunidades.';		    
-
-}
 
 function selectedKeyFortune(name){
 		//tengo un key de entrada
@@ -164,6 +167,6 @@ function evalAnswerFortune(){
 	if (userRespuesta.join("")==wordRespuesta.join("")){
 		switchView('gameView',{'res':'win','subView':'answerView'});
 	}else{
-		switchView('gameView',{'res':'lost','subView':'answerView'});
+		switchView('gameView',{'res':'lost','subView':'answerView','respuesta': document.getElementById('allPhrase').innerText.toUpperCase()});
 	}			
 }

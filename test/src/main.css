@@ -6,8 +6,28 @@ html, body{
 	background-color:#666;
 }
 #mainCont{
-	height:100%;	
+	height:100%;
+	position: relative;	
 }
+
+#loadingView{
+	height: 100%;
+	width: 100%;
+	background-color: black;
+	position:absolute;
+	top:0px;
+	left:0px;
+	z-index: 999999;
+	text-align:center;
+	font-size: 17px;
+	color:white;
+}
+svg{
+	width: 100px;
+	height: 100px;
+	margin: 20px;
+	display:inline-block;
+  }
 
 #hlogo{
 	width:35%;

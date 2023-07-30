@@ -78,76 +78,86 @@ function evalAnswerWordle(){
 			
 		}
 		
-		let numContent = rowCont.length;
-		let validTerms = term[numContent];
-		if (validTerms.indexOf(rowCont)==-1 && rowCont!=globals['word'].toUpperCase()){
-			alert("Word not in dictionary");
-		}else{
+		//si es brand new osea es el primer wordle y todo esta vacio
+		let esPrimera = document.getElementById('row_0').innerText.length;
 
-			//por cada columna
-			for (x=0;x<globals['columns'];x++){
-				//selecciona el elemento
-				let curLetterEl = document.getElementById(globals['curRow']+'_'+x);
-				//califica
-				if(arrWord[x]==curLetterEl.innerText){
-					globals['keys_ok'].push(arrWord[x]);
-					curLetterEl.className += " wordle_ok wordle_hide";
-					correctLetters++;
-				}else if (arrWord.indexOf(curLetterEl.innerText)!==-1){
-					globals['keys_wrong_position'].push(curLetterEl.innerText);
-					curLetterEl.className += " wordle_almost wordle_hide";
-				}else{
-					globals['keys_wrong'].push(curLetterEl.innerText);
-					curLetterEl.className += " wordle_nok wordle_hide";
-				}
-				
-				globals['anims'].push(curLetterEl.animate(
-						 [
-							// keyframes			
-							{ transform: "scaleY(0)"},
-							{ transform: "scaleY(-1)"},
-						  ],
-						  { delay: 150*x, duration: 250, iterations: 1, easing: "ease-out",id:globals['curRow']+"_"+x}
-						  ) 
-				);
-			}
-			
-			let c = 0;
-			for (a in globals['anims']){
-				if (c<(globals['columns']-1)){
-					globals['anims'][a].finished.then(
-					(value) => {					
-						let elem = document.getElementById(value.id);
-						elem.className = elem.className.replace(' wordle_hide','');
-						
-					  },
-					  function(error) { /* code if some error */ }
-					);
-				
-				}else{
-					globals['anims'][a].finished.then(
+		if (esPrimera > 0){
+
+			let numContent = rowCont.length;
+			let validTerms = term[numContent];
+			if (validTerms && validTerms.indexOf(rowCont)==-1 && rowCont!=globals['word'].toUpperCase()){
+				alert("Word not in dictionary");
+			}else{
+	
+				//por cada columna
+				for (x=0;x<globals['columns'];x++){
+					//selecciona el elemento
+					let curLetterEl = document.getElementById(globals['curRow']+'_'+x);
+					//califica
+					if(arrWord[x]==curLetterEl.innerText){
+						globals['keys_ok'].push(arrWord[x]);
+						curLetterEl.className += " wordle_ok wordle_hide";
+						correctLetters++;
+					}else if (arrWord.indexOf(curLetterEl.innerText)!==-1){
+						globals['keys_wrong_position'].push(curLetterEl.innerText);
+						curLetterEl.className += " wordle_almost wordle_hide";
+					}else{
+						globals['keys_wrong'].push(curLetterEl.innerText);
+						curLetterEl.className += " wordle_nok wordle_hide";
+					}
 					
-					function(value) { 
-						let elem = document.getElementById(value.id);
-						elem.className = elem.className.replace(' wordle_hide','');
-						if (correctLetters==globals['columns']){
-								switchView('gameView',{'res':'win','subView':'answerView'});
-						}else{
-							//TODO: si last row :(
-							if (globals['curRow']==globals['rows']-1){
-								switchView('gameView',{'res':'lost','subView':'answerView'});
-							}else{
-								globals['curRow']++;
-								globals['curCol']=0;
-							}
-						}
-					  },
-					  function(error) { /* code if some error */ }
+					globals['anims'].push(curLetterEl.animate(
+							 [
+								// keyframes			
+								{ transform: "scaleY(0)"},
+								{ transform: "scaleY(-1)"},
+							  ],
+							  { delay: 150*x, duration: 250, iterations: 1, easing: "ease-out",id:globals['curRow']+"_"+x}
+							  ) 
 					);
-				
 				}
-				c++;
+				
+				let c = 0;
+				for (a in globals['anims']){
+					if (c<(globals['columns']-1)){
+						globals['anims'][a].finished.then(
+						(value) => {					
+							let elem = document.getElementById(value.id);
+							elem.className = elem.className.replace(' wordle_hide','');
+							
+						  },
+						  function(error) { /* code if some error */ }
+						);
+					
+					}else{
+						globals['anims'][a].finished.then(
+						
+						function(value) { 
+							let elem = document.getElementById(value.id);
+							elem.className = elem.className.replace(' wordle_hide','');
+							if (correctLetters==globals['columns']){
+									switchView('gameView',{'res':'win','subView':'answerView'});
+							}else{
+								//TODO: si last row :(
+								if (globals['curRow']==globals['rows']-1){
+									switchView('gameView',{'res':'lost','subView':'answerView'});
+								}else{
+									globals['curRow']++;
+									globals['curCol']=0;
+								}
+							}
+						  },
+						  function(error) { /* code if some error */ }
+						);
+					
+					}
+					c++;
+				}
 			}
+			evalKeys();	
+		}else{
+			console.log("se hizo enter pero esta vacio, tons nada");
 		}
-		evalKeys();	
+
+
 }

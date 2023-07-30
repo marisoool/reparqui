@@ -25,12 +25,12 @@ function setCharValueQA(key){
 //arma presentacion de interface
 function gameQA(game,response){
 
+    
     let word = response.word;
 
     let orig = globals['QA'][globals['curQuestion']];
     validChars = ["1","2","3","4","5","6","7","8","9","0","Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Ñ","Z","X","C","V","B","N","M"];
-    //modifica layoute del teclado
-    positions=[30,36];
+    //modifica layout del teclado
     const ptr = /\([0-9\.].*?\)/g;
     let matches = [...orig[1].matchAll(ptr)];
     //estos dos arreglos estan unidos por el indice, uno es el subWord y el otro el tipo, si es free or not
@@ -117,7 +117,13 @@ function selectedKeyQA(name){
     if (validChars.indexOf(name)!==-1){
         setCharValueQA(name);
     }else if (name=='ENTER'){
-        evalAnswer('qa');
+        let elems = document.getElementsByClassName('wordle_input');
+        if(elems.length>0 && elems.innerText && elems.innerText.length>0){
+            evalAnswer('qa');
+        }else{
+            console.log('aquip en qa revisar que pasa si no hay para rellenar y se da enter');
+        }
+        
     }else if(name=="BACKSPACE"){
         //quita el valor del utlimo
         let elems = document.getElementsByClassName('wordle_input');
@@ -146,7 +152,7 @@ function whichWordQA(response,registro){
 //ANSWER FUNCTIONS
 function evalAnswerQA(){
 	let myValids = validChars.concat([' ']);
-	let userRespuesta = document.getElementById('resp').innerText.toUpperCase().split('').filter(item=>myValids.includes(item)).join("").replace(' ','');
+	let userRespuesta = document.getElementById('resp').innerText.toUpperCase().split('').filter(item=>myValids.includes(item)).join("").replaceAll(' ','');
 	let wordRespuesta = globals['word'].toUpperCase().split('').filter(item=>myValids.includes(item)).join("").replace(' ','');
     let realResp = document.getElementById('resp').innerText.toUpperCase().split('').filter(item=>item!='\n').join("");
 	if (userRespuesta==wordRespuesta){
