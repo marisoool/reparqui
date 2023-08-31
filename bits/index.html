@@ -1,1 +1,39 @@
-asd
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habits Rec</title>
+    <style type="text/css">
+        html, body{
+            background-color:#666;
+            font-family:sans-serif;
+            height:100%;
+            margin:0;
+            padding:0;
+            text-align:center;
+        }
+        #mainCont{
+            border: 1px solid white;
+            width: 80%;
+            margin:40px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mainCont">
+        <div id="botsDiv"></div>
+        <hr>
+        <select id="filtro">
+            <option selected="selected">Dia</option>
+            <option>Semana</option>
+            <option>Mes</option>
+            <option>Año</option>
+        </select>
+        <br>
+        <div id="list"></div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
