@@ -92,59 +92,59 @@ function setCharValueFortune(key){
 	//console.log(globals['word'].length,allLetters.length,'<',nregalo+chances);
 
 	//si es incorrectya cero strikes
-
-	//if((allLetters.length<=chances+nregalo)){
-	if((allLetters.length<lettersWord.length)){
-		//si ya esta en algun arreglo registrado ya sea wrong wrong pos o ok, no hace nada y es valido el char y esta en la palabra
-		if (allLetters.indexOf(key)==-1 && validChars.indexOf(key)!==-1){
-			if (lettersWord.indexOf(key)!==-1){
-				let palabras = globals['word'].toUpperCase().split(' ');
-				for(p in palabras){
-					for (l in palabras[p]){
-						if(palabras[p][l]==key){
-							let elemOK = document.getElementById(p+'_'+l);
-							elemOK.innerText=palabras[p][l];
-						}
+	//si ya esta en algun arreglo registrado ya sea wrong wrong pos o ok, no hace nada y es valido el char y esta en la palabra
+	if (allLetters.indexOf(key)==-1 && validChars.indexOf(key)!==-1){
+		if (lettersWord.indexOf(key)!==-1){
+			let palabras = globals['word'].toUpperCase().split(' ');
+			for(p in palabras){
+				for (l in palabras[p]){
+					if(palabras[p][l]==key){
+						let elemOK = document.getElementById(p+'_'+l);
+						elemOK.innerText=palabras[p][l];
 					}
 				}
-				//asigna a los arreglos globales
-				globals['keys_ok'].push(key);
-			}else{
-
-				if (globals['strikes']<3){ //todiavia tiene chances
-					let st = document.getElementById('strike'+(globals['strikes']+1));
-					console.log(st);
-					console.log('strike'+globals['strikes']+1);
-					st.style.display='inline-block';
-				}
-				globals['strikes']++;
-				globals['keys_wrong'].push(key);
 			}
-			//colorea teclado
-			evalKeys();
-			
-		}
-		globals['f_chances']++;
-		if(globals['strikes']==3){
-			let cbGuess = document.getElementById('optionKey');
-			//cbGuess.checked=true;
-			cbGuess.click();
-			cbGuess.setAttribute('disabled','disabled');
-			document.getElementById('guessPhraseTxt').focus();
-			document.getElementById('guessPhraseTxt').select();
-			
+			//asigna a los arreglos globales
+			globals['keys_ok'].push(key);
 		}else{
-			let cbGuess = document.getElementById('optionKey');
-			let userRespuesta = document.getElementById('allPhrase').innerText.toUpperCase().replaceAll('\n','').replaceAll(' ','');
-			let wordRespuesta = globals['word'].toUpperCase().replaceAll(' ','');
-			//console.log(userRespuesta,wordRespuesta);
-			if(userRespuesta==wordRespuesta){
-				switchView('gameView',{'res':'win','subView':'answerView'});
-			}			
 
+			if (globals['strikes']<3){ //todiavia tiene chances
+				let st = document.getElementById('strike'+(globals['strikes']+1));
+				console.log(st);
+				console.log('strike'+globals['strikes']+1);
+				st.style.display='inline-block';
+			}
+			globals['strikes']++;
+			globals['keys_wrong'].push(key);
 		}
+		//colorea teclado
+		evalKeys();
+		
+	}else{
+		console.log("123");
+	}
+	if(globals['strikes']==3){
+		console.log("345");
+		let cbGuess = document.getElementById('optionKey');
+		//cbGuess.checked=true;
+		cbGuess.click();
+		cbGuess.setAttribute('disabled','disabled');
+		document.getElementById('guessPhraseTxt').focus();
+		document.getElementById('guessPhraseTxt').select();
+		
+	}else{
+		console.log("456");
+		let cbGuess = document.getElementById('optionKey');
+		let userRespuesta = document.getElementById('allPhrase').innerText.toUpperCase().replaceAll('\n','').replaceAll(' ','');
+		let wordRespuesta = globals['word'].toUpperCase().replaceAll(' ','');
+		//console.log(userRespuesta,wordRespuesta);
+		if(userRespuesta==wordRespuesta){
+			switchView('gameView',{'res':'win','subView':'answerView'});
+		}			
 
 	}
+
+
 
 
 	
@@ -159,6 +159,8 @@ function selectedKeyFortune(name){
 		if (elemChecked.checked){
 			if (name=='ENTER'){
 				evalAnswer('fortune');
+			}else{
+				console.log("789");
 			}
 		}else{
 			
