@@ -22,7 +22,7 @@ html, body{
 	font-size: 17px;
 	color:white;
 }
-svg{
+#loadingView svg{
 	width: 100px;
 	height: 100px;
 	margin: 20px;
@@ -209,3 +209,7 @@ h5{
 	padding:12px;
 	margin:0;
 }
+
+
+#strikes{margin-left:10px;}
+#strikes svg{width: 25px;}
