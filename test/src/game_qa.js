@@ -158,6 +158,6 @@ function evalAnswerQA(){
 	if (userRespuesta==wordRespuesta){
 		switchView('gameView',{'res':'win','subView':'answerView'});
 	}else{
-		switchView('gameView',{'res':'lost','subView':'answerView','userRes':realResp});
+		switchView('gameView',{'res':'lost','subView':'answerView','userRes':realResp,'esp':true});
 	}			    
 }

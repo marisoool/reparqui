@@ -1,8 +1,8 @@
 
 function loadAnswerView(vals){
-	console.log(vals);
+	//console.log(vals);
 	if(vals.userRes){
-		console.log(vals.userRes); //lo que se puso, hacer el comparativo
+		//console.log(vals.userRes); //lo que se puso, hacer el comparativo
 	}
 	let curGame = globals['curGame'];
 	resetStates();
@@ -49,6 +49,10 @@ function loadAnswerView(vals){
 	let content = globals['QA'][globals['curQuestion']][1];
 	if(curGame=='qa'){
 		content = content.split('(','').join("").split(')','').join();
+	}
+
+	if(vals.esp){
+		content = globals['QA'][globals['curQuestion']][1];
 	}
 
 	detailShort.innerHTML=content;
